@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd"
+        >
+    <context:component-scan base-package="org.ougen.application" />
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver" id="resolver">
+        <property name="prefix" value="/WEB-INF/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="defaultEncoding" value="utf-8"></property>
+        <property name="maxUploadSizePerFile" value="1024"></property>
+        <property name="maxUploadSize" value="10240"></property>
+    </bean>
+    <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+        <property name="basename" value="il8n.message"></property>
+        <property name="defaultEncoding" value="UTF-8"></property>
+    </bean>
+    <bean id="handlerMapping" class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping">
+    </bean>
+    <bean id="handlerAdapter" class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+    </bean>
+    <bean id="viewResolvers" class="org.springframework.web.servlet.view.BeanNameViewResolver">
+        <property name="order" value="1"></property>
+    </bean>
+    <bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver">
+        <property name="cookieName" value="lang"></property>
+        <property name="defaultLocale" value="en_US"></property>
+        <property name="cookieMaxAge" value="600000"></property>
+        <property name="cookiePath" value="/"></property>
+    </bean>
+    <mvc:interceptors>
+        <bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+            <property name="paramName" value="lang" />
+        </bean>
+        <mvc:interceptor>
+            <mvc:mapping path="/**"></mvc:mapping>
+            <!--<mvc:exclude-mapping path="/WEB-INF/login1"/>-->
+            <bean name="intercept" class="org.ougen.application.interception.MyInterception"></bean>
+        </mvc:interceptor>
+    </mvc:interceptors>
+    <mvc:annotation-driven enable-matrix-variables="true"/>
+
+    <mvc:default-servlet-handler/>
+</beans>
